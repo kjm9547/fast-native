@@ -1,10 +1,12 @@
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { View,StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
 const IconButton = (props) =>{
     return(
+      <TouchableOpacity hitSlop={{top:10, bottom:10}} style={{paddingHorizontal:6}}>
         <Ionicons name={props.name} size={24} color="baddlack" />
+        </TouchableOpacity>
     )
 }
 export default () => {
@@ -27,7 +29,7 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         justifyContent:"space-between",
         paddingVertical:10,
-       
+       backgroundColor:"white"
     },
     title: {
         fontSize: 22,

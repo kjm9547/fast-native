@@ -1,15 +1,15 @@
+import dayjs from 'dayjs';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { SafeAreaView } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import Calculator from './Calculator';
-
+import {getCalendarColumns} from './src/util'
 export default function App() {
-  
+  const now =dayjs();
+  const colums = getCalendarColumns(now);
   return (
-    <SafeAreaView style={styles.container}>
-      <Calculator/>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Text>Open up App.js to start working on your app!</Text>
+      <StatusBar style="auto" />
+    </View>
   );
 }
 

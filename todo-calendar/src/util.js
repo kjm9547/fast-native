@@ -4,7 +4,7 @@ export const fillEmptyColumns = (columns, start, end) => {
   const filledColumns = columns.slice(0);
 
   // 1. 첫날 이전 공백 채우기
-  const startDay = dayjs(start).get("day");
+  const startDay = dayjs(start).get("day"); 
   for (let i = 1; i <= startDay; i += 1) {
     const date = dayjs(start).subtract(i, "day");
     filledColumns.unshift(date);
@@ -38,3 +38,12 @@ export const getCalendarColumns = (now) => {
   const filledColumns = fillEmptyColumns(columns, start, end);
   return filledColumns;
 };
+
+const dayTexts = ["일","월","화","수", "목", "금", "토"]
+export const getDayText = (day) =>{
+  return dayTexts[day];
+}
+
+export const getDayColor = (day) =>{
+  return day === 0 ? "#e67639" : day === 6 ? "#5872d1" : "#2b2b2b";
+}

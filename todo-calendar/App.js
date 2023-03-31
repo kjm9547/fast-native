@@ -1,41 +1,16 @@
 import dayjs from 'dayjs';
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView } from 'react-native';
-import { TouchableOpacity } from 'react-native';
-import { FlatList } from 'react-native';
-import { StyleSheet, Text, View } from 'react-native';
-import Margin from './src/Margin';
-import { getCalendarColumns, getDayColor, getDayText } from './src/util'
+import { Image, SafeAreaView,StyleSheet, Text, View,TouchableOpacity,FlatList } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
-import { useState } from 'react';
+import {getStatusBarHeight} from 'react-native-iphone-x-helper'
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-const columnSize = 35;
-const Column = ({
-  text,
-  color,
-  opacity,
-  disabled,
-  onPress,
-  isSelected
-}) => {
-  return (
-    <TouchableOpacity 
-      disabled ={disabled}
-      onPress={onPress}
-    style={{
-      width: columnSize,
-      height: columnSize,
-      
-      justifyContent: "center",
-      alignItems:"center",
-      backgroundColor: isSelected?"#c2c2c2":"transparent",
-      borderRadius:columnSize/2
-    }}>
-      <Text style={{ color, opacity }}>{text}</Text>
-    </TouchableOpacity>
 
-  )
-}
+import { getCalendarColumns} from './src/util'
+
+import { useCalendar } from './src/hook/use-calendar';
+import { useTodoList } from './src/hook/use-todo-list';
+import Calendar from './src/Calendar';
+
+const statusBarHeight = getStatusBarHeight(true);
 
 const ArrowButton = ({ onPress, iconName }) => {
   return (
@@ -46,93 +21,62 @@ const ArrowButton = ({ onPress, iconName }) => {
 }
 export default function App() {
   const now = dayjs();
-  const colums = getCalendarColumns(now);
-  const [selectedDate,setSelectedDate] = useState(now);
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const columns = getCalendarColumns(now);
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    console.warn("A date has been picked: ", date);
-    setSelectedDate(dayjs(date))
-    hideDatePicker();
-  };
-const onPressLeftArrow =() =>{
-  const newSelectedDate = dayjs(selectedDate).subtract(1,'month')
-  setSelectedDate(newSelectedDate)
-}
-const onPressRightArrow =() =>{
+  const {
+    selectedDate,
+    setSelectedDate,
+    isDatePickerVisible,
+    showDatePicker,
+    hideDatePicker,
+    handleConfirm,
+    subtract1Month,
+    add1Month,
+   } = useCalendar(now);
+   const { todoList} = useTodoList(selectedDate)
   
-  const newSelectedDate = dayjs(selectedDate).add(1,'month')
-  setSelectedDate(newSelectedDate)
-}
-  const ListHeaderComponent = () => {
-    const currentDateText = dayjs(selectedDate).format("YYYY.MM.DD.");
-    return (
-      <View>
-        <Margin height={15} />
-        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-          <ArrowButton iconName="arrow-left" onPress={onPressLeftArrow}/>
-          <TouchableOpacity onPress={showDatePicker}>
-            <Text style={{ fontSize: 20, color: "#404040" }}>{currentDateText}</Text>
-          </TouchableOpacity>
-          <ArrowButton iconName="arrow-right" onPress={onPressRightArrow}/>
-        </View>
-        <Margin height={15} />
-        <View style={{ flexDirection: "row" }}>
+  const onPressLeftArrow = subtract1Month
+  const onPressRightArrow = add1Month
+const onPressHeaderDate = showDatePicker;
+const onPressDate = setSelectedDate;
 
-          {/*         */}
-          {[0, 1, 2, 3, 4, 5, 6].map(day => {
-            const dayText = getDayText(day);
-            const color = getDayColor(day);
-            return (
-              <Column 
-              key={`day-${day}`}
-              text={dayText} 
-              color={color} 
-              opacity={1}
-              disabled={true} />
-            )
-          })}
-        </View>
-      </View>
-    )
-  }
-  const renderItem = ({ item: date }) => {
-    const dateText = dayjs(date).get('date');
-    const day = dayjs(date).get('day')
-    const color = getDayColor(day);
-    const isCurrentMonth = dayjs(date).isSame(selectedDate, 'month')
-    const onPress =() => {
-      setSelectedDate(date)
-    }
-    const isSelected = dayjs(date).isSame(selectedDate,'date');
-    return (
-      <Column 
-      text={dateText}
-      color={color} 
-      opacity={isCurrentMonth ? 1 : 0.4}
-      onPress={onPress}
-      isSelected={isSelected} />
-    )
-  }
+
+  const ListHeaderComponent = () =>(
+    <Calendar
+      columns ={columns}
+        selectedDate={selectedDate}
+        onPressLeftArrow = {onPressLeftArrow}
+        onPressRightArrow = {onPressRightArrow}
+        onPressHeaderDate ={onPressHeaderDate}
+        onPressDate = {onPressDate}
+      />
+  )
   return (
     <SafeAreaView style={styles.container}>
+      <Image
+      source={{
+        // 출처: https://kr.freepik.com/free-photo/white-crumpled-paper-texture-for-background_1189772.htm
+        uri: "https://img.freepik.com/free-photo/white-crumpled-paper-texture-for-background_1373-159.jpg?w=1060&t=st=1667524235~exp=1667524835~hmac=8a3d988d6c33a32017e280768e1aa4037b1ec8078c98fe21f0ea2ef361aebf2c",
+      }}
+      style = {{
+        width:"100%",
+        height:"100%",
+        position:"absolute",
+      }}
+      />
+      
+
       <FlatList
-        data={colums}
-        keyExtractor={(_, index)=>{
-          `column-${index}`
+        data={todoList}
+        ListHeaderComponent = {ListHeaderComponent}
+        renderItem = { ({item:todo}) => {
+          return(
+            <Text>{todo.content}</Text>
+          )
         }}
-        numColumns={7}
-        ListHeaderComponent={ListHeaderComponent}
-        renderItem={renderItem} />
-         <DateTimePickerModal
+      />
+
+      <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
         onConfirm={handleConfirm}

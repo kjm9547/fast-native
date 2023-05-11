@@ -14,7 +14,9 @@ const Column = ({
     opacity,
     disabled,
     onPress,
-    isSelected
+    isSelected,
+    hasTodo,
+    
 }) => {
     return (
         <TouchableOpacity
@@ -29,7 +31,7 @@ const Column = ({
                 backgroundColor: isSelected ? "#c2c2c2" : "transparent",
                 borderRadius: columnSize / 2
             }}>
-            <Text style={{ color, opacity }}>{text}</Text>
+            <Text style={{ color, opacity, fontWeight: hasTodo?"bold":"normal" }}>{text}</Text>
         </TouchableOpacity>
 
     )
@@ -49,7 +51,8 @@ export default ({
     onPressLeftArrow,
     onPressRightArrow,
     onPressHeaderDate,
-    onPressDate
+    onPressDate,
+    todoList
 
 }) => {
 
@@ -92,19 +95,22 @@ export default ({
         const isCurrentMonth = dayjs(date).isSame(selectedDate, 'month')
         const onPress = () => onPressDate(date);
         const isSelected = dayjs(date).isSame(selectedDate, 'date');
+        const hasTodo = todoList.find(todo => dayjs(todo.date).isSame(dayjs(date),'date'))
         return (
             <Column
                 text={dateText}
                 color={color}
                 opacity={isCurrentMonth ? 1 : 0.4}
                 onPress={onPress}
-                isSelected={isSelected} />
+                isSelected={isSelected} 
+                hasTodo={hasTodo}/>
         )
     }
     return (
         <FlatList
             data={columns}
             scrollEnabled={false}
+            
             keyExtractor={(_, index) => `column-${index}`}
             numColumns={7}
             renderItem={renderItem}

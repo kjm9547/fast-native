@@ -7,7 +7,7 @@ export default ({ modalVisible, albumTitle, setAlbumTitle,onSubmitEditing,onPres
             visible={modalVisible}>
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}>
-                <Pressable style={{ flex: 1 , backgroundColor:"pink"}} onPress ={onPressBackdrop} >
+                <Pressable style={{ flex: 1 }} onPress ={onPressBackdrop} >
                     <SafeAreaView style={{ flex: 1, position: "absolute", width: "100%", bottom: 0 }}>
                         <TextInput
                             placeholder="앨범명"

@@ -3,18 +3,22 @@ import { Alert } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 
 const defaultAlbum = {
-    id: 1,
-    title: "기본",
+  id: 1,
+  title: "기본",
 }
 
-export const useGallery = () =>{
+export const useGallery = () => {
 
   const [images, setImages] = useState([]);
-  const [selectedAlbum,setSelectedAlbum] = useState(defaultAlbum);
+  const [selectedAlbum, setSelectedAlbum] = useState(defaultAlbum);
   const [albums, setAlbums] = useState([defaultAlbum])
-  const [modalVisible,setModalVisible] = useState(false)
+  const [textInputModalVisible, setTextInputModalVisible] = useState(false)
+  const [bigImgModalVisible, setBigImgModalVisible] = useState(false)
   const [albumTitle, setAlbumTitle] = useState('');
-const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedImage, setSeletedImage] = useState(null)
+
+
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -27,68 +31,103 @@ const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     console.log(result);
 
     if (!result.canceled) {
-        const lastId = images.length === 0? 0:images[images.length-1].id
-        const  newImage = {
-            id:lastId+1,
-            uri: result.assets[0].uri 
-        }
+      const lastId = images.length === 0 ? 0 : images[images.length - 1].id
+      const newImage = {
+        id: lastId + 1,
+        uri: result.assets[0].uri,
+        albumId: selectedAlbum.id
+      }
       setImages([
-        ...images,newImage
-        
-    ]);
+        ...images, newImage
+
+      ]);
     }
-    
+
   };
 
-  const deleteImage= (itemId) =>{
+  const deleteImage = (itemId) => {
     Alert.alert("이미지를 삭제하시겠습니까?", "", [
-        {
-            style: "cancel",
-            text: "아니오"
-        },
-        {
-            text:"네",
-            onPress: () =>{
-                const newImages = images.filter(image => image.id !== itemId) ;
-                setImages(newImages)
-            }
+      {
+        style: "cancel",
+        text: "아니오"
+      },
+      {
+        text: "네",
+        onPress: () => {
+          const newImages = images.filter(image => image.id !== itemId);
+          setImages(newImages)
         }
+      }
     ])
   }
-  const openModal = () => setModalVisible(true)
-  const closeModal = () => setModalVisible(false)
+  const openTextInputModal = () => setTextInputModalVisible(true)
+  const closeTextInputModal = () => setTextInputModalVisible(false)
+  const openBigImgModal = () => setBigImgModalVisible(true);
+  const closeBigImgModal = () => setBigImgModalVisible(false);
   const openDropDown = () => setIsDropdownOpen(true)
   const closeDropDown = () => setIsDropdownOpen(false)
 
   const addAlbum = () => {
-    const lastId = albums.length === 0? 0:albums[albums.length-1].id
+    const lastId = albums.length === 0 ? 0 : albums[albums.length - 1].id
     const newAlbum = {
-        id: lastId +1,
-        title:albumTitle,
+      id: lastId + 1,
+      title: albumTitle,
     };
     setAlbums([
-        ...albumTitle,
-        newAlbum
+      ...albums,
+      newAlbum
     ])
-    
+    setSelectedAlbum(newAlbum);
+  };
+
+  const selectAlbum = (album) => {
+    setSelectedAlbum(album)
   }
+
+
+  const deleteAlbum = (albumId) => {
+    if (albumId === defaultAlbum.id) {
+      Alert.alert("기본 앨범은 삭제 할 수 없어요!")
+      return;
+    }
+    Alert.alert("앨범를 삭제하시겠습니까?", "", [
+      {
+        style: "cancel",
+        text: "아니오"
+      },
+      {
+        text: "네",
+        onPress: () => {
+          const newAlbums = albums.filter(album => album.id !== albumId);
+          setAlbums(newAlbums)
+          setSelectedAlbum(defaultAlbum)
+        }
+      }
+    ])
+  }
+const selectImage = (image) => {
+setSeletedImage(image)
+}
+
   const resetAlbumTitle = () => setAlbumTitle('');
-  const imagesWidthAddButton =[
-    ...images,
+
+  const filteredImages = images.filter((image) => image.albumId === selectedAlbum.id);
+  const imagesWidthAddButton = [
+    ...filteredImages,
     {
-        id : -1,
-        uri: "",
+      id: -1,
+      uri: "",
     }
   ]
-    return{
+  return {
     images,
     pickImage,
     deleteImage,
     imagesWidthAddButton,
     selectedAlbum,
-    modalVisible,
-    openModal,
-    closeModal,
+    textInputModalVisible,
+    openTextInputModal,
+    closeTextInputModal,
     defaultAlbum,
     albumTitle,
     setAlbumTitle,
@@ -96,6 +135,14 @@ const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     resetAlbumTitle,
     isDropdownOpen,
     openDropDown,
-    closeDropDown
-    };
+    closeDropDown,
+    albums,
+    selectAlbum,
+    deleteAlbum,
+    bigImgModalVisible,
+    openBigImgModal,
+    closeBigImgModal,
+    selectImage,
+    selectedImage
+  };
 };

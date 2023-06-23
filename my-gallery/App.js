@@ -1,7 +1,4 @@
-
-
 import {
-  Button,
   Dimensions,
   FlatList,
   Image,
@@ -10,25 +7,25 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-} from 'react-native';
-import BIgImgModal from './src/BIgImgModal';
-import MyDropDownPicker from './src/MyDropDownPicker';
-import TextInputModal from './src/TextInputModal';
+} from "react-native";
+import BigImgModal from "./src/BIgImgModal";
 
-import { useGallery } from './src/use-gallery';
+import MyDropDownPicker from "./src/MyDropDownPicker";
+import TextInputModal from "./src/TextInputModal";
+import { useGallery } from "./src/use-gallery";
 
-const width = Dimensions.get('screen').width;
+const width = Dimensions.get("screen").width;
 const columnSize = width / 3;
+
 export default function App() {
-  const {
-    //images,
-    pickImage,
+  const { 
+    imagesWithAddButton, 
+    pickImage, 
     deleteImage,
-    imagesWidthAddButton,
     selectedAlbum,
+    textInputModalVisible,
     openTextInputModal,
     closeTextInputModal,
-    textInputModalVisible,
     albumTitle,
     setAlbumTitle,
     addAlbum,
@@ -43,114 +40,127 @@ export default function App() {
     openBigImgModal,
     closeBigImgModal,
     selectImage,
-    selectedImage
+    selectedImage,
+    moveToPreviousImage,
+    moveToNextImage,
+    showPreviousArrow,
+    showNextArrow
   } = useGallery();
+
   const onPressOpenGallery = () => {
     pickImage();
-
-  }
-  const onLongPressImgae = (imageId) => deleteImage(imageId)
+  };
+  const onLongPressImage = (iamgeId) => deleteImage(iamgeId);
   const onPressAddAlbum = () => {
     openTextInputModal();
-  }
+  };
   const onSubmitEditing = () => {
     if (!albumTitle) return;
-    //1. 앨범에 타이틀 추가
+
+    // 1. 앨범에 타이틀 추가
     addAlbum();
-    //2. 모달 닫기 & TextInput의 value 초기화
+
+    // 2. 모달 닫기 & TextInput의 value 초기화
     closeTextInputModal();
     resetAlbumTitle();
-  }
-
-
-  const onPressTextInputModalBackDrop = () => {
+  };
+  const onPresTextInputModalBackdrop = () => {
     closeTextInputModal();
-  }
-  const onPressBigImgModalBackDrop = () => {
-    closeBigImgModal();
-  }
+  };
   const onPressHeader = () => {
     if (isDropdownOpen) {
       closeDropDown();
-    }
-    else {
+    } else {
       openDropDown();
     }
-
-  }
-
+  };
   const onPressAlbum = (album) => {
-    selectAlbum(album)
+    selectAlbum(album);
     closeDropDown();
-  }
-
+  };
   const onLongPressAlbum = (albumId) => {
     deleteAlbum(albumId);
-  }
-
+  };
   const onPressImage = (image) => {
     selectImage(image);
     openBigImgModal();
-    
+  };
+  const onPresBigImgModalBackdrop = () => {
+    closeBigImgModal();
+  };
+
+  const onPressLeftArrow = () => {
+    moveToPreviousImage();
+  }
+  const onPressRightArrow = () => {
+    moveToNextImage();
   }
 
   const renderItem = ({ item: image, index }) => {
     const { id, uri } = image;
     if (id === -1) {
       return (
-        <TouchableOpacity
+        <TouchableOpacity 
           onPress={onPressOpenGallery}
           style={{
-            width: columnSize,
-            height: columnSize,
+            width: columnSize, 
+            height: columnSize, 
             backgroundColor: "lightgrey",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}>
-          <Text style={{ fontSize: 45, fontWeight: "100" }}>+</Text>
+          <Text style={{ fontWeight: "100", fontSize: 45 }}>+</Text>    
         </TouchableOpacity>
       )
     }
     return (
-      <TouchableOpacity onPress={()=> onPressImage(image)} onLongPress={() => onLongPressImgae(id)} >
+      <TouchableOpacity onPress={() => onPressImage(image)} onLongPress={() => onLongPressImage(id)}>
         <Image
           source={{ uri }}
-          style={{ width: columnSize, height: columnSize }} />
+          style={{ width: columnSize, height: columnSize }}
+        />
       </TouchableOpacity>
-    )
+    );
+  };
 
-  }
   return (
     <SafeAreaView style={styles.container}>
-
+      {/* 앨범 DropDown, 앨범 추가 버튼 */}
       <MyDropDownPicker
-        selectedAlbum={selectedAlbum}
-        deleteAlbum={deleteAlbum}
-        onPressAddAlbum={onPressAddAlbum}
-        onPressHeader={onPressHeader}
-        isDropdownOpen={isDropdownOpen}
-        albums={albums}
+        isDropdownOpen={isDropdownOpen} 
+        onPressHeader={onPressHeader} 
+        selectedAlbum={selectedAlbum} 
+        onPressAddAlbum={onPressAddAlbum} 
+        albums={albums} 
+        onPressAlbum={onPressAlbum} 
         onLongPressAlbum={onLongPressAlbum}
-        onPressAlbum={onPressAlbum}
       />
 
-      <TextInputModal
+      {/* 앨범을 추가하는 TextInputModal */}
+      <TextInputModal 
         modalVisible={textInputModalVisible}
         albumTitle={albumTitle}
         setAlbumTitle={setAlbumTitle}
-        onSubmitEditing={onSubmitEditing}        
-        onPressBackDrop={onPressTextInputModalBackDrop}
-      ></TextInputModal>
-
-      <BIgImgModal
-        modalVisible ={bigImgModalVisible}
-        onPressBackdrop={onPressBigImgModalBackDrop}
-        selectedImage={selectedImage}
+        onSubmitEditing={onSubmitEditing}
+        onPressBackdrop={onPresTextInputModalBackdrop}
       />
-      <FlatList
-        data={imagesWidthAddButton}
-        renderItem={renderItem}
-        numColumns={3}
+
+      {/* 이미지를 크게 보는 Modal */}
+      <BigImgModal
+        modalVisible={bigImgModalVisible}
+        onPressBackdrop={onPresBigImgModalBackdrop}
+        selectedImage={selectedImage}
+        onPressLeftArrow={onPressLeftArrow}
+        onPressRightArrow={onPressRightArrow}
+        showPreviousArrow={showPreviousArrow}
+        showNextArrow={showNextArrow}
+      />
+
+      {/* 이미지 리스트 */}
+      <FlatList 
+        data={imagesWithAddButton} 
+        renderItem={renderItem} 
+        numColumns={3} 
         style={{ zIndex: -1 }}
       />
     </SafeAreaView>
@@ -160,7 +170,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    margin: Platform.OS === "android" ? 30 : 0,
+    backgroundColor: "#fff",
+    marginTop: Platform.OS === "android" ? 30 : 0,
   },
 });

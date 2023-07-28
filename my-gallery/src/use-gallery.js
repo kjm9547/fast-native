@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { Alert } from "react-native";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const defaultAlbum = {

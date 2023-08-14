@@ -5,12 +5,16 @@ import validator from 'validator';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Colors from "../modules/Colors";
 import AuthContext from "../component/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types";
 const SignupScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
     const [name, setName] = useState('');
     const {processingSignup,singup}=useContext(AuthContext)
+    const {navigate} = useNavigation<NativeStackNavigationProp <RootStackParamList>>();
     const emailErroText = useMemo(() => {
         if (email.length === 0) {
             return '이메일을 입력해주세요'
@@ -98,8 +102,8 @@ const SignupScreen = () => {
         }
     },[singup,email,password,name]);
     const onPressSigninButton = useCallback(()=> {
-
-    },[]);
+        navigate('Signin');
+    },[navigate]);
     return (
         <Screen title="회원가입">
             {processingSignup ?(
@@ -151,7 +155,7 @@ const SignupScreen = () => {
                     {nameErrorText&& (<Text style={styles.errorText}> {nameErrorText}</Text>)}
                 </View>
                 <View>
-                    <TouchableOpacity style={signupButtonStyle} onPress={onPressSignupButton}>
+                    <TouchableOpacity style={signupButtonStyle} onPress={onPressSignupButton} disabled ={!signupButtonEnabled}>
                         <Text style={styles.signupButtonText}>회원가입</Text>
                     </TouchableOpacity>
 

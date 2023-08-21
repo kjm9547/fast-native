@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Colors from "../modules/Colors";
 import { useNavigation } from "@react-navigation/native";
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 interface ScreenProps {
     title?: string;
@@ -20,7 +21,7 @@ const Screen = ({ children, title }: ScreenProps) => {
                     {
                         canGoBack() && (
                             <TouchableOpacity onPress={onPressBackButton}>
-                                <Text style={styles.backButtonText}>{'Back'}</Text>
+                                <Icon style={styles.backButtonIcon} name="arrow-back"/>
                             </TouchableOpacity>
                         )
                     }
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     left: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center"
+        
 
     },
     center: {
@@ -77,6 +78,10 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: Colors.BLACK
     },
-
+    backButtonIcon:{
+        color:Colors.BLACK,
+        fontSize:20,
+        marginLeft:20
+    }
 })
 export default Screen

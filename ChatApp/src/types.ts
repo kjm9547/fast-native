@@ -17,4 +17,25 @@ export interface User{
 
 export enum Collections {
     USERS = 'users',
+    CHATS = 'chats',
+    MESSAGES = 'messages'
+}
+
+export interface Chat {
+    id:string; //채팅방 아이디
+    userIds:string[];   //채팅방에서 대화중인 유저들의 아이디
+    users:User[]    // 유저의 정보
+}
+
+export interface Message{
+    id: string;
+    user:User;
+    text:string;
+    createdAt:Date;
+}
+
+export interface FirestoreMessageData{
+    text:string;
+    user:User;
+    createdAt: Date;
 }

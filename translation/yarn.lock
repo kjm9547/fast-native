@@ -3134,7 +3134,7 @@
   dependencies:
     "uuid" "^3.4.0"
 
-"expo-font@~11.4.0":
+"expo-font@^11.4.0", "expo-font@~11.4.0":
   "integrity" "sha512-nkmezCFD7gR/I6R+e3/ry18uEfF8uYrr6h+PdBJu+3dawoLOpo+wFb/RG9bHUekU1/cPanR58LR7G5MEMKHR2w=="
   "resolved" "https://registry.npmjs.org/expo-font/-/expo-font-11.4.0.tgz"
   "version" "11.4.0"
@@ -5430,6 +5430,11 @@
   dependencies:
     "object-assign" "^4.1.1"
     "react-is" "^16.12.0 || ^17.0.0 || ^18.0.0"
+
+"react-string-format@^1.0.1":
+  "integrity" "sha512-wumW1tDTb7bMyNPDlkmbAZk9Ilkxzo/3LX7l5mCh9VJJX7mQPu6ip8siISzxfpCbEovalVUfRSH/PH3gqh9HNQ=="
+  "resolved" "https://registry.npmjs.org/react-string-format/-/react-string-format-1.0.1.tgz"
+  "version" "1.0.1"
 
 "react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@18.2.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="

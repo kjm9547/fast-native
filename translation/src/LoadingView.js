@@ -10,7 +10,8 @@ export default () => {
                 ref={ref}
                 style={{
                     flex:1,
-                    width:150,
+                    width:'100%',
+                    height:'100%',
                     backgroundColor:'lightblue'
                 }}
                 source={require('../assets/animation_lm3jkkfs.json')}

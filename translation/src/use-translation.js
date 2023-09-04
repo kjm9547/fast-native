@@ -3,17 +3,21 @@ import {getLocales} from 'expo-localization'
 import { I18n } from 'i18n-js';
 import { useEffect, useState } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import {format} from 'react-string-format'
+
 const ko = require('./lang/lang.ko.json')
 const en = require('./lang/lang.en.json')
 const ja = require('./lang/lang.ja.json')
 const zh = require('./lang/lang.zh.json')
+const es = require('./lang/lang.es.json')
 
 // Set the key-value pairs for the different languages you want to support.
 const i18n = new I18n({
   ko,
   en,
   ja,
-  zh
+  zh,
+  es
 });
 
 i18n.enableFallback = true;
@@ -51,7 +55,7 @@ export const useTranslation =() => {
         locale,
         setLocale,
         t:(scope) => i18n.t(scope, {locale}),
-        
+        format
     }
 
 }
